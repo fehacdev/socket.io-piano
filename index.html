@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket.io Piano</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      font-family: 'Roboto', sans-serif;
+      background: #0F1F2F;
+    }
+
+    #piano {
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .octave {
+      display: flex;
+      gap: 1px;
+    }
+
+    .white,
+    .black {
+      transition: filter 0.1s ease-in-out
+    }
+
+    .white {
+      width: 1.2vw;
+      height: 150px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 0px 0px 4px 4px;
+    }
+
+    .black {
+      z-index: 1;
+      width: 0.8vw;
+      height: 90px;
+      background: black;
+      border: 1px solid #020408;
+      border-radius: 0px 0px 4px 4px;
+      margin: 0 -0.4vw;
+    }
+
+    .white.active {
+      filter: brightness(0.8)
+    }
+
+    .black.active {
+      filter: contrast(0.2)
+    }
+
+    .octave-input-group,
+    .nickname-input-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      margin: 24px auto;
+      padding: 12px 8px;
+      border-radius: 9999px;
+      background-color: #33637c;
+      color: white;
+      font-weight: 400;
+      width: fit-content;
+    }
+
+    .octave-input-group {
+      padding: 8px 8px 8px 28px;
+    }
+
+    .octave-input-group input,
+    .nickname-input-group input {
+      background-color: #33637c;
+      outline: none;
+      border: none;
+      color: white;
+      font-weight: 600;
+      text-align: center;
+      width: fit-content;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="nickname-input-group">
+    <input type="text" id="nickname" value="Anonymous">
+  </div>
+  <div class="octave-input-group">
+    <span>Octave: </span>
+    <input type="number" id="octave" min="0" max="9" step="1" value="0">
+  </div>
+  <div id="piano">
+    <div class="octave">
+      <div id="C-0" onclick="playNote('C', 0)" class="white"></div>
+      <div id="Csharp-0" onclick="playNote('Csharp', 0)" class="black"></div>
+      <div id="D-0" onclick="playNote('D', 0)" class="white"></div>
+      <div id="Dsharp-0" onclick="playNote('Dsharp', 0)" class="black"></div>
+      <div id="E-0" onclick="playNote('E', 0)" class="white"></div>
+      <div id="F-0" onclick="playNote('F', 0)" class="white"></div>
+      <div id="Fsharp-0" onclick="playNote('Fsharp', 0)" class="black"></div>
+      <div id="G-0" onclick="playNote('G', 0)" class="white"></div>
+      <div id="Gsharp-0" onclick="playNote('Gsharp', 0)" class="black"></div>
+      <div id="A-0" onclick="playNote('A', 0)" class="white"></div>
+      <div id="Asharp-0" onclick="playNote('Asharp', 0)" class="black"></div>
+      <div id="B-0" onclick="playNote('B', 0)" class="white"></div>
+    </div>
+    <div class="octave">
+      <div id="C-1" onclick="playNote('C', 1)" class="white"></div>
+      <div id="Csharp-1" onclick="playNote('Csharp', 1)" class="black"></div>
+      <div id="D-1" onclick="playNote('D', 1)" class="white"></div>
+      <div id="Dsharp-1" onclick="playNote('Dsharp', 1)" class="black"></div>
+      <div id="E-1" onclick="playNote('E', 1)" class="white"></div>
+      <div id="F-1" onclick="playNote('F', 1)" class="white"></div>
+      <div id="Fsharp-1" onclick="playNote('Fsharp', 1)" class="black"></div>
+      <div id="G-1" onclick="playNote('G', 1)" class="white"></div>
+      <div id="Gsharp-1" onclick="playNote('Gsharp', 1)" class="black"></div>
+      <div id="A-1" onclick="playNote('A', 1)" class="white"></div>
+      <div id="Asharp-1" onclick="playNote('Asharp', 1)" class="black"></div>
+      <div id="B-1" onclick="playNote('B', 1)" class="white"></div>
+    </div>
+    <div class="octave">
+      <div id="C-2" onclick="playNote('C', 2)" class="white"></div>
+      <div id="Csharp-2" onclick="playNote('Csharp', 2)" class="black"></div>
+      <div id="D-2" onclick="playNote('D', 2)" class="white"></div>
+      <div id="Dsharp-2" onclick="playNote('Dsharp', 2)" class="black"></div>
+      <div id="E-2" onclick="playNote('E', 2)" class="white"></div>
+      <div id="F-2" onclick="playNote('F', 2)" class="white"></div>
+      <div id="Fsharp-2" onclick="playNote('Fsharp', 2)" class="black"></div>
+      <div id="G-2" onclick="playNote('G', 2)" class="white"></div>
+      <div id="Gsharp-2" onclick="playNote('Gsharp', 2)" class="black"></div>
+      <div id="A-2" onclick="playNote('A', 2)" class="white"></div>
+      <div id="Asharp-2" onclick="playNote('Asharp', 2)" class="black"></div>
+      <div id="B-2" onclick="playNote('B', 2)" class="white"></div>
+    </div>
+    <div class="octave">
+      <div id="C-3" onclick="playNote('C', 3)" class="white"></div>
+      <div id="Csharp-3" onclick="playNote('Csharp', 3)" class="black"></div>
+      <div id="D-3" onclick="playNote('D', 3)" class="white"></div>
+      <div id="Dsharp-3" onclick="playNote('Dsharp', 3)" class="black"></div>
+      <div id="E-3" onclick="playNote('E', 3)" class="white"></div>
+      <div id="F-3" onclick="playNote('F', 3)" class="white"></div>
+      <div id="Fsharp-3" onclick="playNote('Fsharp', 3)" class="black"></div>
+      <div id="G-3" onclick="playNote('G', 3)" class="white"></div>
+      <div id="Gsharp-3" onclick="playNote('Gsharp', 3)" class="black"></div>
+      <div id="A-3" onclick="playNote('A', 3)" class="white"></div>
+      <div id="Asharp-3" onclick="playNote('Asharp', 3)" class="black"></div>
+      <div id="B-3" onclick="playNote('B', 3)" class="white"></div>
+    </div>
+    <div class="octave">
+      <div id="C-4" onclick="playNote('C', 4)" class="white"></div>
+      <div id="Csharp-4" onclick="playNote('Csharp', 4)" class="black"></div>
+      <div id="D-4" onclick="playNote('D', 4)" class="white"></div>
+      <div id="Dsharp-4" onclick="playNote('Dsharp', 4)" class="black"></div>
+      <div id="E-4" onclick="playNote('E', 4)" class="white"></div>
+      <div id="F-4" onclick="playNote('F', 4)" class="white"></div>
+      <div id="Fsharp-4" onclick="playNote('Fsharp', 4)" class="black"></div>
+      <div id="G-4" onclick="playNote('G', 4)" class="white"></div>
+      <div id="Gsharp-4" onclick="playNote('Gsharp', 4)" class="black"></div>
+      <div id="A-4" onclick="playNote('A', 4)" class="white"></div>
+      <div id="Asharp-4" onclick="playNote('Asharp', 4)" class="black"></div>
+      <div id="B-4" onclick="playNote('B', 4)" class="white"></div>
+    </div>
+    <div class="octave">
+      <div id="C-5" onclick="playNote('C', 5)" class="white"></div>
+      <div id="Csharp-5" onclick="playNote('Csharp', 5)" class="black"></div>
+      <div id="D-5" onclick="playNote('D', 5)" class="white"></div>
+      <div id="Dsharp-5" onclick="playNote('Dsharp', 5)" class="black"></div>
+      <div id="E-5" onclick="playNote('E', 5)" class="white"></div>
+      <div id="F-5" onclick="playNote('F', 5)" class="white"></div>
+      <div id="Fsharp-5" onclick="playNote('Fsharp', 5)" class="black"></div>
+      <div id="G-5" onclick="playNote('G', 5)" class="white"></div>
+      <div id="Gsharp-5" onclick="playNote('Gsharp', 5)" class="black"></div>
+      <div id="A-5" onclick="playNote('A', 5)" class="white"></div>
+      <div id="Asharp-5" onclick="playNote('Asharp', 5)" class="black"></div>
+      <div id="B-5" onclick="playNote('B', 5)" class="white"></div>
+    </div>
+    <div class="octave">
+      <div id="C-6" onclick="playNote('C', 6)" class="white"></div>
+      <div id="Csharp-6" onclick="playNote('Csharp', 6)" class="black"></div>
+      <div id="D-6" onclick="playNote('D', 6)" class="white"></div>
+      <div id="Dsharp-6" onclick="playNote('Dsharp', 6)" class="black"></div>
+      <div id="E-6" onclick="playNote('E', 6)" class="white"></div>
+      <div id="F-6" onclick="playNote('F', 6)" class="white"></div>
+      <div id="Fsharp-6" onclick="playNote('Fsharp', 6)" class="black"></div>
+      <div id="G-6" onclick="playNote('G', 6)" class="white"></div>
+      <div id="Gsharp-6" onclick="playNote('Gsharp', 6)" class="black"></div>
+      <div id="A-6" onclick="playNote('A', 6)" class="white"></div>
+      <div id="Asharp-6" onclick="playNote('Asharp', 6)" class="black"></div>
+      <div id="B-6" onclick="playNote('B', 6)" class="white"></div>
+    </div>
+    <div class="octave">
+      <div id="C-7" onclick="playNote('C', 7)" class="white"></div>
+      <div id="Csharp-7" onclick="playNote('Csharp', 7)" class="black"></div>
+      <div id="D-7" onclick="playNote('D', 7)" class="white"></div>
+      <div id="Dsharp-7" onclick="playNote('Dsharp', 7)" class="black"></div>
+      <div id="E-7" onclick="playNote('E', 7)" class="white"></div>
+      <div id="F-7" onclick="playNote('F', 7)" class="white"></div>
+      <div id="Fsharp-7" onclick="playNote('Fsharp', 7)" class="black"></div>
+      <div id="G-7" onclick="playNote('G', 7)" class="white"></div>
+      <div id="Gsharp-7" onclick="playNote('Gsharp', 7)" class="black"></div>
+      <div id="A-7" onclick="playNote('A', 7)" class="white"></div>
+      <div id="Asharp-7" onclick="playNote('Asharp', 7)" class="black"></div>
+      <div id="B-7" onclick="playNote('B', 7)" class="white"></div>
+    </div>
+    <div class="octave">
+      <div id="C-8" onclick="playNote('C', 8)" class="white"></div>
+      <div id="Csharp-8" onclick="playNote('Csharp', 8)" class="black"></div>
+      <div id="D-8" onclick="playNote('D', 8)" class="white"></div>
+      <div id="Dsharp-8" onclick="playNote('Dsharp', 8)" class="black"></div>
+      <div id="E-8" onclick="playNote('E', 8)" class="white"></div>
+      <div id="F-8" onclick="playNote('F', 8)" class="white"></div>
+      <div id="Fsharp-8" onclick="playNote('Fsharp', 8)" class="black"></div>
+      <div id="G-8" onclick="playNote('G', 8)" class="white"></div>
+      <div id="Gsharp-8" onclick="playNote('Gsharp', 8)" class="black"></div>
+      <div id="A-8" onclick="playNote('A', 8)" class="white"></div>
+      <div id="Asharp-8" onclick="playNote('Asharp', 8)" class="black"></div>
+      <div id="B-8" onclick="playNote('B', 8)" class="white"></div>
+    </div>
+    <div class="octave">
+      <div id="C-9" onclick="playNote('C', 9)" class="white"></div>
+      <div id="Csharp-9" onclick="playNote('Csharp', 9)" class="black"></div>
+      <div id="D-9" onclick="playNote('D', 9)" class="white"></div>
+      <div id="Dsharp-9" onclick="playNote('Dsharp', 9)" class="black"></div>
+      <div id="E-9" onclick="playNote('E', 9)" class="white"></div>
+      <div id="F-9" onclick="playNote('F', 9)" class="white"></div>
+      <div id="Fsharp-9" onclick="playNote('Fsharp', 9)" class="black"></div>
+      <div id="G-9" onclick="playNote('G', 9)" class="white"></div>
+      <div id="Gsharp-9" onclick="playNote('Gsharp', 9)" class="black"></div>
+      <div id="A-9" onclick="playNote('A', 9)" class="white"></div>
+      <div id="Asharp-9" onclick="playNote('Asharp', 9)" class="black"></div>
+      <div id="B-9" onclick="playNote('B', 9)" class="white"></div>
+    </div>
+  </div>
+  <script>
+    let octaveShift = 0
+    const notesFrequency = {
+      'C': 16.35,
+      'Csharp': 17.32,
+      'D': 18.35,
+      'Dsharp': 19.45,
+      'E': 20.60,
+      'F': 21.83,
+      'Fsharp': 23.21,
+      'G': 24.50,
+      'Gsharp': 25.96,
+      'A': 27.50,
+      'Asharp': 29.14,
+      'B': 30.87,
+    }
+
+    const keyCodeToNote = {
+      'KeyQ': 'C',
+      'KeyW': 'Csharp',
+      'KeyE': 'D',
+      'KeyR': 'Dsharp',
+      'KeyT': 'E',
+      'KeyY': 'F',
+      'KeyU': 'Fsharp',
+      'KeyI': 'G',
+      'KeyO': 'Gsharp',
+      'KeyP': 'A',
+      'BracketLeft': 'Asharp',
+      'BracketRight': 'B',
+    }
+
+    const audioContext = new AudioContext()
+
+    function playSound(frequency) {
+      const oscillatorNode = audioContext.createOscillator()
+      const gainNode = audioContext.createGain()
+      const octave = +document.getElementById('octave').value
+      oscillatorNode.type = 'sine'
+      oscillatorNode.frequency.value = frequency
+      oscillatorNode.connect(gainNode)
+      gainNode.connect(audioContext.destination)
+      oscillatorNode.start()
+      gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 2)
+    }
+
+    function playNote(note, octave) {
+      if (notesFrequency[note]) {
+        playSound(notesFrequency[note] * Math.pow(2, octave))
+        const noteElement = document.querySelector(`#${note}-${octave}`)
+        noteElement.classList.add('active')
+        setTimeout(() => noteElement.classList.remove('active'), 100)
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'CapsLock') {
+        octaveShift = -1
+      } else if (e.code === 'ShiftLeft') {
+        octaveShift = 1
+      }
+      const octave = +document.getElementById('octave').value + octaveShift
+      const note = keyCodeToNote[e.code]
+      playNote(note, octave)
+    })
+
+    document.addEventListener('keyup', (e) => {
+      if (e.code === 'CapsLock' || e.code === 'ShiftLeft') {
+        octaveShift = 0
+      }
+    })
+
+    document.onmousemove = (e) => {
+      console.log(e.clientX, e.clientY)
+    }
+  </script>
+</body>
+
+</html>
